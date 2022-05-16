@@ -165,8 +165,8 @@ async def on_connect(event: CommentEvent):
     evaluate = (f"{event.comment}")
 
     if (f"{event.comment}") == "/ping":
-        print(f"{event.comment}")
-        print("pong!")
+        print(f"{event.user.uniqueId}" + " zegt " + {event.comment})
+        print("Ik zeg: pong!")
     elif (f"{event.comment}") == "/help":
         print(f"    ")
         print("De beschikbare commando's zijn:")
@@ -224,16 +224,14 @@ async def on_connect(event: CommentEvent):
             print(f"    ")
         else:
             try:
-
                 evaluate = (evaluate[5:250])
                 print(f"    ")
-                if print(len(eval(evaluate))) > 25:
-                    print("Uitkomst is te lang!")
-                else:
-                    print(eval(evaluate))
+                print(f"{event.user.uniqueId}" + "-> schreef: " + evaluate)
+                print("Uitkomst = " + (eval(evaluate)))
+                print(f"    ")
             except:
                 webbrowser.open("nope.mp3")
-                (f"{event.user.uniqueId}" + "-> Dat commando bestaat niet :)")
+                print(f"{event.user.uniqueId}" + "-> Dat commando bestaat niet :)")
                 print("nope sound")
                 pass
     else:
