@@ -54,16 +54,21 @@ client: TikTokLiveClient = TikTokLiveClient(
 async def on_join(event: JoinEvent):
     print(f"{event.user.uniqueId} is in de stream erbij gekomen!")
     webbrowser.open("like.mp3")
+    print("(Plop sound)")
+    print(f"    ")
+    
 
 @client.on("like")
 async def on_like(event: LikeEvent):
     if event.likeCount == 1:
-        webbrowser.open("like.mp3")
+        webbrowser.open("Rose.mp3")
         # exec(open("test2.py").read())
         print(f"    ")
         print(f"{event.user.uniqueId} heeft Likes gestuurd!")
         print(f"Dankjewel {event.user.uniqueId}!")
+        print("(Are you sure about that sound)")
         print(f"    ")
+        time.sleep(2)
 
 
 @client.on("share")
@@ -73,8 +78,10 @@ async def on_share(event: ShareEvent):
     # exec(open("test4.py").read())
     print(f"{event.user.uniqueId} heeft de stream gedeeld!")
     print(f"Dankjewel {event.user.uniqueId}!!!")
+    print("(Shuuuiiii sound)")
     print(f"    ")
     print(f"    ")
+    time.sleep(1)
 
 
 @client.on("gift")
@@ -83,19 +90,21 @@ async def on_gift(event: GiftEvent):
     if event.gift.gift_type == 1:
         if event.gift.repeat_end == 1:
             exec(open("Gift.py").read())
-            time.sleep(3)
             print(f"    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Emotional Damage sound)")
             print(f"    ")
+            time.sleep(5)
 
         elif event.gift.gift_type != 1:
             exec(open("Gift.py").read())
-            time.sleep(3)
             print(f"    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Emotional Damage sound)")
             print(f"    ")
+            time.sleep(5)
 
 @client.on("follow")
 async def on_like(event: FollowEvent):
@@ -112,18 +121,18 @@ async def on_like(event: FollowEvent):
         # file_object.write(f"{event.user.uniqueId}")
         # file_object.close()
         webbrowser.open("follow.mp3")
-        time.sleep(3)
-        exec(open("test3.py").read())
+        #exec(open("test3.py").read())
         print(f"    ")
         print(f"    ")
         print(f"    ")
         print(f"{event.user.uniqueId} heeft Renjestoo gevolgd!")
         print(f"Thanks voor de follow {event.user.uniqueId}, je bent een topper!")
+        print("(Thank you for following sound)")
         print(f"    ")
         print(f"    ")
         print(f"    ")
         # time.sleep(6)
-
+        time.sleep(3)
 
 @client.on("comment")
 async def on_connect(event: CommentEvent):
