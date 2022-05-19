@@ -7,12 +7,8 @@ from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
 #from TikTokLive.types.events import GiftEvent, FollowEvent
 
-# users that followed
-# utf = users.txt
-
-# users that liked
-# utl = usersL.txt
-
+usersTxt = open("users.txt")
+gifts = (open("gifts.txt"))
 users = []
 lq = []
 fq = []
@@ -71,7 +67,7 @@ async def on_join(event: JoinEvent):
 
 @client.on("like")
 async def on_like(event: LikeEvent):
-    if event.likeCount == 1:
+    if event.likeCount == 10:
         webbrowser.open("like.mp3")
         print(f"    ")
         print(f"{event.user.uniqueId} heeft  Likes gestuurd!")
@@ -108,6 +104,12 @@ async def on_gift(event: GiftEvent):
             time.sleep(3)
 
         elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Rose" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Roos":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
             webbrowser.open("Rose.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
@@ -115,10 +117,205 @@ async def on_gift(event: GiftEvent):
             print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
+    elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Panda":
+        if event.gift.repeat_end == 1:
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Panda.mp3")
+            print("    ")
+            print(
+                f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Panda":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Panda.mp3")
+            print("    ")
+            print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+    elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Finger Heart" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Vingerhart":
+        if event.gift.repeat_end == 1:
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("love.mp3")
+            print("    ")
+            print(
+                f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Finger Heart" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Vingerhart":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("love.mp3")
+            print("    ")
+            print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+    elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Mini Speaker" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Headphones":
+        if event.gift.repeat_end == 1:
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Beat.mp3")
+            print("    ")
+            print(
+                f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Mini Speaker" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Headphones":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Beat.mp3")
+            print("    ")
+            print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+    elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "TikTok" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Choc Chip Cookie":
+        if event.gift.repeat_end == 1:
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Gentleman.mp3")
+            print("    ")
+            print(
+                f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "TikTok" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Choc Chip Cookie":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Gentleman.mp3")
+            print("    ")
+            print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+    elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Welcome" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Daisies" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Gift Box":
+        if event.gift.repeat_end == 1:
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Welcome.mp3")
+            print("    ")
+            print(
+                f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Welcome" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Daisies" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Gift Box":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Welcome.mp3")
+            print("    ")
+            print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+    elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Wishing Bottle" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "May" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Doughnut" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Coffee":
+        if event.gift.repeat_end == 1:
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Laugh.mp3")
+            print("    ")
+            print(
+                f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Wishing Bottle" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "May" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Doughnut" or event.gift.gift_type > 1 and event.gift.extended_gift.name == "Coffee":
+            with open("gifts.txt", "a+") as file_object:
+                file_object.seek(0)
+                data = file_object.read(100)
+                if len(data) > 0:
+                    file_object.write("\n")
+                file_object.write(f"{event.gift.extended_gift.name}")
+            webbrowser.open("Laugh.mp3")
+            print("    ")
+            print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
+            print(f"Dankjewel {event.user.uniqueId}!")
+            print("(Are you sure about that sound)")
+            print("    ")
+            time.sleep(3)
+
     else:
         # If it's type 1 and the streak is over
         if event.gift.gift_type == 1:
             if event.gift.repeat_end == 1:
+                with open("gifts.txt", "a+") as file_object:
+                    file_object.seek(0)
+                    data = file_object.read(100)
+                    if len(data) > 0:
+                        file_object.write("\n")
+                    file_object.write(f"{event.gift.extended_gift.name}")
                 webbrowser.open("EmotionalDamage.mp3")
                 print(f"    ")
                 print(
@@ -129,6 +326,12 @@ async def on_gift(event: GiftEvent):
                 time.sleep(5)
 
             elif event.gift.gift_type > 1:
+                with open("gifts.txt", "a+") as file_object:
+                    file_object.seek(0)
+                    data = file_object.read(100)
+                    if len(data) > 0:
+                        file_object.write("\n")
+                    file_object.write(f"{event.gift.extended_gift.name}")
                 webbrowser.open("EmotionalDamage.mp3")
                 print(f"    ")
                 print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
@@ -140,11 +343,7 @@ async def on_gift(event: GiftEvent):
 
 @client.on("follow")
 async def on_like(event: FollowEvent):
-    usersTxt = []
-    with open('users.txt') as f:
-        usersTxt = f.readlines()
-
-    if f"{event.user.uniqueId}" in users:
+    if {event.user.uniqueId} in users:
         print(f"    ")
         print(f"{event.user.uniqueId}, je hebt Renjestoo al eens gevolgd ;)")
         print(f"    ")
@@ -154,13 +353,10 @@ async def on_like(event: FollowEvent):
     else:
         # user = (f"{event.user.uniqueId})
         with open("users.txt", "a+") as file_object:
-            # Move read cursor to the start of file.
             file_object.seek(0)
-            # If file is not empty then append '\n'
             data = file_object.read(100)
             if len(data) > 0:
                 file_object.write("\n")
-            # Append text at the end of file
             file_object.write(f"{event.user.uniqueId}")
         users.append({event.user.uniqueId})
         webbrowser.open("follow.mp3")
