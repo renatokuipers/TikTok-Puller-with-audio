@@ -69,7 +69,6 @@ async def on_join(event: JoinEvent):
     print(f"    ")
 """
 
-
 @client.on("like")
 async def on_like(event: LikeEvent):
     if event.likeCount == 1:
@@ -97,24 +96,24 @@ async def on_share(event: ShareEvent):
 @client.on("gift")
 async def on_gift(event: GiftEvent):
     # If it's type 1 and the streak is over
-    if event.gift.gift_type == 1 and event.gift.extended_gift.name == "rose" or event.gift.extended_gift.name == "roos":
+    if event.gift.gift_type == 1 and event.gift.extended_gift.name == "Rose" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Roos":
         if event.gift.repeat_end == 1:
             webbrowser.open("Rose.mp3")
-            print(f"    ")
+            print("    ")
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("(Are you sure about that sound)")
-            print(f"    ")
+            print("    ")
             time.sleep(3)
 
-        elif event.gift.gift_type != 1 and event.gift.extended_gift.name == "rose" or event.gift.extended_gift.name == "roos":
+        elif event.gift.gift_type > 1 and event.gift.extended_gift.name == "Rose" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Roos":
             webbrowser.open("Rose.mp3")
-            print(f"    ")
+            print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("(Are you sure about that sound)")
-            print(f"    ")
+            print("    ")
             time.sleep(3)
     else:
         # If it's type 1 and the streak is over
@@ -129,7 +128,7 @@ async def on_gift(event: GiftEvent):
                 print(f"    ")
                 time.sleep(5)
 
-            elif event.gift.gift_type != 1:
+            elif event.gift.gift_type > 1:
                 webbrowser.open("EmotionalDamage.mp3")
                 print(f"    ")
                 print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
@@ -141,12 +140,17 @@ async def on_gift(event: GiftEvent):
 
 @client.on("follow")
 async def on_like(event: FollowEvent):
+    usersTxt = []
+    with open('users.txt') as f:
+        usersTxt = f.readlines()
+
     if f"{event.user.uniqueId}" in users:
         print(f"    ")
         print(f"{event.user.uniqueId}, je hebt Renjestoo al eens gevolgd ;)")
         print(f"    ")
         print(f"    ")
         print(f"    ")
+
     else:
         # user = (f"{event.user.uniqueId})
         with open("users.txt", "a+") as file_object:
