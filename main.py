@@ -1,8 +1,16 @@
+import re, requests, subprocess, urllib.parse, urllib.request
+from bs4 import BeautifulSoup
+import asyncio
+import vlc
+import pafy
 import math
 import time
 import webbrowser
 import tk
 from tk import *
+from youtube import Video
+from pytube import YouTube
+from youtubesearchpython import *
 from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
 #from TikTokLive.types.events import GiftEvent, FollowEvent
@@ -10,6 +18,7 @@ from TikTokLive.types.events import *
 usersTxt = open("users.txt")
 gifts = (open("gifts.txt"))
 users = []
+timer = 0
 lq = []
 fq = []
 sq = []
@@ -28,7 +37,7 @@ client: TikTokLiveClient = TikTokLiveClient(
             "enable_extended_gift_info": True,
 
             # How frequently to poll Webcast API
-            "polling_interval_ms": 500,
+            "polling_interval_ms": 1000,
 
             # Custom Client params
             "client_params": {},
@@ -65,9 +74,15 @@ async def on_join(event: JoinEvent):
     print(f"    ")
 """
 
+async def countdown():
+    global timer
+    while timer > 0:
+        timer -= 1
+        await asyncio.sleep(1)
+
 @client.on("like")
 async def on_like(event: LikeEvent):
-    if event.likeCount == 10:
+    if event.likeCount >= 100:
         webbrowser.open("like.mp3")
         print(f"    ")
         print(f"{event.user.uniqueId} heeft  Likes gestuurd!")
@@ -99,7 +114,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -114,7 +128,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
     elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Panda":
@@ -130,7 +143,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -145,7 +157,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
     elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Finger Heart" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Vingerhart":
@@ -161,7 +172,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -176,7 +186,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
     elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "Mini Speaker" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Headphones":
@@ -192,7 +201,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -207,7 +215,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
     elif event.gift.gift_type == 1 and event.gift.extended_gift.name == "TikTok" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Choc Chip Cookie":
@@ -223,7 +230,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -238,7 +244,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -255,7 +260,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -270,7 +274,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -287,7 +290,6 @@ async def on_gift(event: GiftEvent):
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -302,7 +304,6 @@ async def on_gift(event: GiftEvent):
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             print(f"Dankjewel {event.user.uniqueId}!")
-            print("(Are you sure about that sound)")
             print("    ")
             time.sleep(3)
 
@@ -376,12 +377,31 @@ async def on_like(event: FollowEvent):
 @client.on("comment")
 async def on_connect(event: CommentEvent):
     evaluate = (f"{event.comment}")
-
+    global timer
     if (f"{event.comment}") == "/ping":
         print(f"    ")
         print(f"{event.user.uniqueId}" + " zegt ping")
         print("Ik zeg: pong!")
         print(f"    ")
+    elif "/play" in (f"{event.comment}"):
+        tempSearch = (f"{event.comment}")
+        videosSearch = VideosSearch(tempSearch[6:50], limit=1)
+        for i in range(1):
+            link = (videosSearch.result()['result'][i]['link'])
+            video = pafy.new(link)
+            best = video.getbestaudio()
+            length = video.length
+            title = video.title
+            media = vlc.MediaPlayer(best.url)
+            if timer == 0:
+                timer = length
+                media.play()
+                print("Now playing: " + title)
+                print(f"Wacht {length} sec voor de volgende request.")
+                await countdown()
+            else:
+                print(f"Nog {timer} sec voor de volgende request")
+
     elif (f"{event.comment}") == "/script":
         print("Het script is gratis op http://github.com/renatokuipers te vinden.")
     elif (f"{event.comment}") == "/help":
@@ -389,6 +409,7 @@ async def on_connect(event: CommentEvent):
         print("De beschikbare commando's zijn:")
         print("- /script")
         print("- /ping")
+        print("- /play searchresult op youtube")
         print("- /calc(3*3) of /calc(2+4) of andere sommen")
         print(f"    ")
     elif "/calc" in (f"{event.comment}"):
@@ -421,7 +442,6 @@ async def on_connect(event: CommentEvent):
 @client.on("live_end")
 async def on_connect(event: LiveEndEvent):
     print(f"Livestream ended :(")
-
 
 if __name__ == '__main__':
     print("Het script staat op github.com/renatokuipers")
