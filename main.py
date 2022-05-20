@@ -79,6 +79,8 @@ async def countdown():
     while timer > 0:
         timer -= 1
         await asyncio.sleep(1)
+        if timer == 0:
+            print("\n De volgende song request kan gedaan worden :) \n")
 
 @client.on("like")
 async def on_like(event: LikeEvent):
@@ -396,14 +398,15 @@ async def on_connect(event: CommentEvent):
             if timer == 0:
                 timer = length
                 media.play()
-                print("Now playing: " + title)
-                print(f"Wacht {length} sec voor de volgende request.")
+                print(f"{event.user.uniqueId} heeft {title} aangevraagd")
+                print("\n Now playing: " + title)
+                print(f"\n Wacht {length} sec voor de volgende request. \n")
                 await countdown()
             else:
-                print(f"Nog {timer} sec voor de volgende request")
+                print(f" \n Nog {timer} sec voor de volgende request \n")
 
     elif (f"{event.comment}") == "/script":
-        print("Het script is gratis op http://github.com/renatokuipers te vinden.")
+        print("\n Het script is gratis op http://github.com/renatokuipers te vinden.\n")
     elif (f"{event.comment}") == "/help":
         print(f"    ")
         print("De beschikbare commando's zijn:")
