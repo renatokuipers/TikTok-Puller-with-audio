@@ -6,23 +6,20 @@ import pafy
 import math
 import time
 import webbrowser
-import tk
-from tk import *
+import PySimpleGUI as sg
 from youtube import Video
 from pytube import YouTube
 from youtubesearchpython import *
 from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
-#from TikTokLive.types.events import GiftEvent, FollowEvent
+
+#from GUI2 import *
 
 usersTxt = open("users.txt")
 gifts = (open("gifts.txt"))
 users = []
 timer = 0
-lq = []
-fq = []
-sq = []
-gq = []
+loop = asyncio.get_event_loop()
 
 client: TikTokLiveClient = TikTokLiveClient(
     unique_id="@renjestoo", **(
@@ -74,6 +71,7 @@ async def on_join(event: JoinEvent):
     print(f"    ")
 """
 
+
 async def countdown():
     global timer
     while timer > 0:
@@ -81,6 +79,7 @@ async def countdown():
         await asyncio.sleep(1)
         if timer == 0:
             print("\n De volgende song request kan gedaan worden :) \n")
+
 
 @client.on("like")
 async def on_like(event: LikeEvent):
@@ -91,7 +90,7 @@ async def on_like(event: LikeEvent):
         print(f"Dankjewel {event.user.uniqueId}!")
         # print("(Plop sound)")
         print(f"    ")
-        #time.sleep(1)
+        # time.sleep(1)
 
 
 @client.on("share")
@@ -395,9 +394,13 @@ async def on_connect(event: CommentEvent):
             length = video.length
             title = video.title
             media = vlc.MediaPlayer(best.url)
+            if "10 hour" in (f"{event.comment}") or "5 hour" in (f"{event.comment}") or "1 hour" in (f"{event.comment}") or "24 hour" in (f"{event.comment}") or "8 hour" in (f"{event.comment}") or "6 hour" in (f"{event.comment}") or "4 hour" in (f"{event.comment}") or "2 hour" in (f"{event.comment}"):
+                print(f"{event.user.uniqueId} wil graag een nummer luisteren")
+                print("Zo lang gaan we niet naar een nummer luisteren ;)")
             if timer == 0:
                 timer = length
                 media.play()
+                media.audio_set_volume(75)
                 print(f"{event.user.uniqueId} heeft {title} aangevraagd")
                 print("\n Now playing: " + title)
                 print(f"\n Wacht {length} sec voor de volgende request. \n")
@@ -408,20 +411,20 @@ async def on_connect(event: CommentEvent):
     elif (f"{event.comment}") == "/script":
         print("\n Het script is gratis op http://github.com/renatokuipers te vinden.\n")
     elif (f"{event.comment}") == "/help":
-        print(f"    ")
-        print("De beschikbare commando's zijn:")
-        print("- /script")
-        print("- /ping")
-        print("- /play searchresult op youtube")
-        print("- /calc(3*3) of /calc(2+4) of andere sommen")
-        print(f"    ")
+        print(
+            "\nDe beschikbare commando's zijn:\n- /script\n- /ping\n- /play artist and title of song\n- /calc(3*3) of /calc(2+4) of andere sommen\n")
+        # print("- /script")
+        # print("- /ping")
+        # print("- /play artist and title of song")
+        # print("- /calc(3*3) of /calc(2+4) of andere sommen\n")
     elif "/calc" in (f"{event.comment}"):
-        if "exec" in (f"{event.comment}") or "exit" in (f"{event.comment}") or "quit" in (f"{event.comment}") or "import" in (f"{event.comment}") or "compile" in (f"{event.comment}"):
+        if "exec" in (f"{event.comment}") or "exit" in (f"{event.comment}") or "quit" in (
+        f"{event.comment}") or "import" in (f"{event.comment}") or "compile" in (f"{event.comment}"):
             webbrowser.open("nope.mp3")
             print(f"    ")
-            print(f"{event.user.uniqueId}" + "-> Nope :)")
-            print("nope sound")
-            print(f"    ")
+            print(f"{event.user.uniqueId}" + "-> Nope :)\nNope sound\n")
+            # print("nope sound")
+            # print(f"    ")
         else:
             try:
                 evaluate = (evaluate[5:250])
@@ -431,27 +434,29 @@ async def on_connect(event: CommentEvent):
                 print(f"    ")
             except:
                 webbrowser.open("nope.mp3")
-                print(f"{event.user.uniqueId}" + "-> Dat commando bestaat niet :)")
-                print("nope sound")
+                print(f"{event.user.uniqueId}" + "-> Dat commando bestaat niet :)\nNope sound")
+                # print("nope sound")
                 pass
     else:
         print(f"    ")
-        print(f"{event.user.uniqueId}: ")
-        print(f"{event.comment}")
-        print(f"    ")
-        print(f"    ")
+        print(f"{event.user.uniqueId}: \n{event.comment}\n\n")
+        # print(f"{event.comment}")
+        # print(f"    ")
+        # print(f"    ")
 
 
 @client.on("live_end")
 async def on_connect(event: LiveEndEvent):
     print(f"Livestream ended :(")
 
+
 if __name__ == '__main__':
-    print("Het script staat op github.com/renatokuipers")
-    print("Dit is een project die ik maak puur uit hobby.")
-    print("Chats komen in het scherm te staan.")
-    print("Follow, Share of Gift voor soundeffects.")
-    print("Typ /help voor commando's")
+    print(
+        "Het script staat op github.com/renatokuipers\nDit is een project die ik maak puur uit hobby.\nChats komen in het scherm te staan.\nFollow, Share of Gift voor soundeffects.\nTyp /help voor commando's")
+    # print("Dit is een project die ik maak puur uit hobby.")
+    # print("Chats komen in het scherm te staan.")
+    # print("Follow, Share of Gift voor soundeffects.")
+    # print("Typ /help voor commando's")
     try:
         client.run()
     except:
