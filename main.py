@@ -22,45 +22,11 @@ last_song = ""
 last_play_command = ""
 
 
-# add songs to txt file
-def add_song_to_txt(title):
-    global songlist
-    songlist.append(title)
-    with open("songlist.txt", "a") as myfile:
-        myfile.write(title + "\n")
-
-
-# create list of containing the last 3 songs
-def create_songlist():
-    global songlist
-    songlist = open("songlist.txt")
-    songlist = songlist.readlines()
-    songlist = songlist[-3:]
-
-
-# check if song is in songlist
-def check_song_in_list(title):
-    global songlist
-    for song in songlist:
-        if title in song:
-            return True
-    return False
-
-#get first song out of songlist(title) and remove it from the list
-def get_first_song():
-    global songlist
-    songlist = open("songlist.txt")
-    songlist = songlist.readlines()
-    songlist = songlist[-3:]
-    songlist = songlist[0]
-    songlist = songlist.replace("\n", "")
-    return songlist
-
 client: TikTokLiveClient = TikTokLiveClient(
     unique_id="@renjestoo", **(
         {
             # Whether to process initial data (cached chats, etc.)
-            "process_initial_data": False,
+            "process_initial_data": True,
 
             # Connect info (viewers, stream status, etc.)
             "fetch_room_info_on_connect": True,
@@ -110,6 +76,11 @@ async def on_join(event: JoinEvent):
 
 """
 
+#calculate the time in seconds and minutes for the countdown() function
+def calculate_time(length):
+    seconds = length % 60
+    minutes = length // 60
+    print(f"Nog {minutes} minuten en {seconds} seconden voor de volgende request\n")
 
 async def countdown():
     global timer
@@ -439,7 +410,7 @@ async def on_connect(event: CommentEvent):
             title = video.title
             media = vlc.MediaPlayer(best.url)
             last_play_command = f"{event.user.uniqueId} + {tempSearch[6:50]}"
-            if title == last_song or check_song_in_list(title) == True:
+            if title == last_song:
                 print(f"{event.user.uniqueId}, Dit nummer is al eens aangevraagd, probeer het later opnieuw.")
             if timer == 0:
                 timer = length
@@ -452,12 +423,13 @@ async def on_connect(event: CommentEvent):
                     media.audio_set_volume(50)
                     print(f"{event.user.uniqueId} heeft {title} aangevraagd")
                     print("\n Now playing: " + title)
-                    print(f"\n Wacht {length} sec voor de volgende request.\n")
-                    add_song(title)
+                    calculate_time(timer)
                     last_song = title
                     await countdown()
             else:
-                print(f" \n Nog {timer} sec voor de volgende request \n")
+                print("Op dit moment wordt " + last_song + " al afgespeeld.")
+                calculate_time(timer)
+                #print(f" \n Nog {timer} sec voor de volgende request \n")
 
     elif (f"{event.comment}") == "/script":
         print("\n Het script is gratis op http://github.com/renatokuipers te vinden.\n")
@@ -473,7 +445,7 @@ async def on_connect(event: CommentEvent):
                 f"{event.comment}") or "import" in (f"{event.comment}") or "compile" in (f"{event.comment}"):
             webbrowser.open("nope.mp3")
             print(f"    ")
-            print(f"{event.user.uniqueId}" + "-> Nope :)\nNope sound\n")
+            print(f"{event.user.uniqueId}" + "-> Nope :)\n")
             # print("nope sound")
             # print(f"    ")
         else:
