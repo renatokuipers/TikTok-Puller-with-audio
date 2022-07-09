@@ -3,6 +3,7 @@ import time
 import webbrowser
 
 import tkinter as tk
+from tabnanny import check
 from tkinter import *
 import pafy
 import vlc
@@ -10,21 +11,56 @@ from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
 from youtubesearchpython import *
 
-
 usersTxt = open("users.txt")
 gifts = (open("gifts.txt"))
 users = []
 timer = 0
 loop = asyncio.get_event_loop()
 
+songlist = open("songlist.txt")
 last_song = ""
 last_play_command = ""
+
+
+# add songs to txt file
+def add_song_to_txt(title):
+    global songlist
+    songlist.append(title)
+    with open("songlist.txt", "a") as myfile:
+        myfile.write(title + "\n")
+
+
+# create list of containing the last 3 songs
+def create_songlist():
+    global songlist
+    songlist = open("songlist.txt")
+    songlist = songlist.readlines()
+    songlist = songlist[-3:]
+
+
+# check if song is in songlist
+def check_song_in_list(title):
+    global songlist
+    for song in songlist:
+        if title in song:
+            return True
+    return False
+
+#get first song out of songlist(title) and remove it from the list
+def get_first_song():
+    global songlist
+    songlist = open("songlist.txt")
+    songlist = songlist.readlines()
+    songlist = songlist[-3:]
+    songlist = songlist[0]
+    songlist = songlist.replace("\n", "")
+    return songlist
 
 client: TikTokLiveClient = TikTokLiveClient(
     unique_id="@renjestoo", **(
         {
             # Whether to process initial data (cached chats, etc.)
-            "process_initial_data": True,
+            "process_initial_data": False,
 
             # Connect info (viewers, stream status, etc.)
             "fetch_room_info_on_connect": True,
@@ -82,6 +118,7 @@ async def countdown():
         await asyncio.sleep(1)
         if timer == 0:
             print("\n De volgende song request kan gedaan worden :) \n")
+            print("Typ /play artiest en titel om een request af te spelen")
 
 
 @client.on("like")
@@ -102,7 +139,7 @@ async def on_share(event: ShareEvent):
     webbrowser.open("share.mp3")
     print(f"{event.user.uniqueId} heeft de stream gedeeld!")
     print(f"Dankjewel {event.user.uniqueId}!!!")
-    print("(Shuuuiiii sound)")
+    # print("(Shuuuiiii sound)")
     print(f"    ")
     print(f"    ")
     # time.sleep(1)
@@ -326,7 +363,7 @@ async def on_gift(event: GiftEvent):
                 print(
                     f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
                 print(f"Dankjewel {event.user.uniqueId}!")
-                print("(Emotional Damage sound)")
+                # print("(Emotional Damage sound)")
                 print(f"    ")
                 time.sleep(5)
 
@@ -341,7 +378,7 @@ async def on_gift(event: GiftEvent):
                 print(f"    ")
                 print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
                 print(f"Dankjewel {event.user.uniqueId}!")
-                print("(Emotional Damage sound)")
+                # print("(Emotional Damage sound)")
                 print(f"    ")
                 time.sleep(5)
 
@@ -390,7 +427,7 @@ async def on_connect(event: CommentEvent):
             print("Er moet een Artiest en Titel toegevoegd worden.")
         if "sus" in (f"{event.comment}") or "killer kamal" in (f"{event.comment}") or "troll" in (
                 f"{event.comment}") or "rick roll" in (f"{event.comment}") or "never gonna give you up" in (
-        f"{event.comment}"):
+                f"{event.comment}") or "6IX9INE" in (f"{event.comment}"):
             print(f"{event.user.uniqueId} wil graag een nummer luisteren")
             print("Hier gaan we niet naar luisteren ;)")
             print("")
@@ -401,9 +438,9 @@ async def on_connect(event: CommentEvent):
             length = video.length
             title = video.title
             media = vlc.MediaPlayer(best.url)
-            last_play_command = (f"{event.user.uniqueId} + {tempSearch[6:50]}")
-            if title == last_song:
-                print(f"{event.user.uniqueId}, Geen repeat van nummers achterelkaar.")
+            last_play_command = f"{event.user.uniqueId} + {tempSearch[6:50]}"
+            if title == last_song or check_song_in_list(title) == True:
+                print(f"{event.user.uniqueId}, Dit nummer is al eens aangevraagd, probeer het later opnieuw.")
             if timer == 0:
                 timer = length
                 if length > 400:
@@ -414,9 +451,9 @@ async def on_connect(event: CommentEvent):
                     media.play()
                     media.audio_set_volume(50)
                     print(f"{event.user.uniqueId} heeft {title} aangevraagd")
-                    # GUI.block_2(print(title))
                     print("\n Now playing: " + title)
-                    print(f"\n Wacht {length} sec voor de volgende request. \n")
+                    print(f"\n Wacht {length} sec voor de volgende request.\n")
+                    add_song(title)
                     last_song = title
                     await countdown()
             else:
@@ -453,7 +490,7 @@ async def on_connect(event: CommentEvent):
                 pass
     else:
         print(f"    ")
-        print(f"{event.user.uniqueId}: \n{event.comment}\n\n")
+        print(f"{event.user.uniqueId}: \n{event.comment}\n")
         # print(f"{event.comment}")
         # print(f"    ")
         # print(f"    ")
@@ -465,7 +502,8 @@ async def on_connect(event: LiveEndEvent):
 
 
 if __name__ == '__main__':
-    print("Het script staat op github.com/renatokuipers\nDit is een project die ik maak puur uit hobby.\nChats komen in het scherm te staan.\nFollow, Share of Gift voor soundeffects.\nTyp /help voor commando's")
+    print(
+        "Het script staat op github.com/renatokuipers\nDit is een project die ik maak puur uit hobby.\nChats komen in het scherm te staan.\nFollow, Share of Gift voor soundeffects.\nTyp /help voor commando's")
     # print("Dit is een project die ik maak puur uit hobby.")
     # print("Chats komen in het scherm te staan.")
     # print("Follow, Share of Gift voor soundeffects.")
