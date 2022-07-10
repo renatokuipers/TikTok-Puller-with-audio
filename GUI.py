@@ -1,4 +1,4 @@
-import main
+import app
 import tkinter as tk
 from tkinter import *
 
@@ -23,11 +23,11 @@ button.grid(row=1, column=0)
 #get comment from main and show it in the textbox
 def show_output():
     text.delete('1.0', END)
-    text.insert(END, main())
+    text.insert(END, app())
     root.update()
     root.after(1000, show_output)
 
 #show the window
 root.mainloop()
 show_output()
-print(main())
+print(app())
