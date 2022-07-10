@@ -2,6 +2,8 @@ import asyncio
 import time
 import webbrowser
 import pyttsx3
+import pygame
+from pygame import *
 
 import tkinter as tk
 from tabnanny import check
@@ -24,7 +26,7 @@ last_play_command = ""
 engine = pyttsx3.init()
 
 client: TikTokLiveClient = TikTokLiveClient(
-    unique_id="@renjestoo", **(
+    unique_id="@sasarban", **(
         {
             # Whether to process initial data (cached chats, etc.)
             "process_initial_data": False,
@@ -77,8 +79,27 @@ async def on_join(event: JoinEvent):
 
 """
 
+#create a new gui with pygame
+class GUI:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("TikTok Puller")
+        self.root.geometry("500x500")
+        self.root.configure(background='#000000')
+        self.text = tk.Text(self.root, height=400, width=450)
+        self.text.grid(row=0, column=0)
+        self.text.configure(wrap='word')
+        self.button = tk.Button(self.root, text="Close", command=self.root.destroy)
+        self.button.grid(row=1, column=0)
+        self.root.mainloop()
+    def show_output(self):
+        self.text.delete('1.0', END)
+        self.text.insert(END, main())
+        self.root.update()
+        self.root.after(1000, self.show_output)
+
 #calculate the time in seconds and minutes for the countdown() function
-def calculate_time(length):
+async def calculate_time(length):
     seconds = length % 60
     minutes = length // 60
     print(f"Nog {minutes} minuten en {seconds} seconden voor de volgende request\n")
@@ -100,6 +121,11 @@ async def on_like(event: LikeEvent):
         print(f"    ")
         print(f"{event.user.uniqueId} heeft  Likes gestuurd!")
         print(f"Dankjewel {event.user.uniqueId}!")
+        #add previous 3 prints to the textbox
+        text.insert(END, f"{event.user.uniqueId} heeft  Likes gestuurd!")
+        text.insert(END, f"Dankjewel {event.user.uniqueId}!")
+        text.insert(END, f"\n")
+        root.update()
         # print("(Plop sound)")
         print(f"    ")
         # time.sleep(1)
@@ -108,9 +134,13 @@ async def on_like(event: LikeEvent):
 @client.on("share")
 async def on_share(event: ShareEvent):
     print(f"    ")
-    webbrowser.open("share.mp3")
     print(f"{event.user.uniqueId} heeft de stream gedeeld!")
     print(f"Dankjewel {event.user.uniqueId}!!!")
+    engine.say(f"{event.user.uniqueId} shared the live!")
+    engine.runAndWait()
+    engine.say(f"Thanx {event.user.uniqueId}!!!")
+    engine.runAndWait()
+    webbrowser.open("share.mp3")
     # print("(Shuuuiiii sound)")
     print(f"    ")
     print(f"    ")
@@ -122,12 +152,12 @@ async def on_gift(event: GiftEvent):
     # If it's type 1 and the streak is over
     if event.gift.gift_type == 1 and event.gift.extended_gift.name == "Rose" or event.gift.gift_type == 1 and event.gift.extended_gift.name == "Roos":
         if event.gift.repeat_end == 1:
-            webbrowser.open("Rose.mp3")
             print("    ")
             print(
                 f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Rose.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -139,11 +169,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Rose.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Rose.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -155,11 +185,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Panda.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Panda.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -171,11 +201,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Panda.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Panda.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -187,11 +217,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("love.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("love.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -203,11 +233,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("love.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("love.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -219,11 +249,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Beat.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x\"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Beat.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -235,11 +265,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Beat.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Beat.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -251,11 +281,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Gentleman.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x\"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Gentleman.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -267,11 +297,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Gentleman.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Gentleman.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -284,11 +314,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Welcome.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x\"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Welcome.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -300,11 +330,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Welcome.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Welcome.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -317,11 +347,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Laugh.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x\"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Laugh.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -333,11 +363,11 @@ async def on_gift(event: GiftEvent):
                 if len(data) > 0:
                     file_object.write("\n")
                 file_object.write(f"{event.gift.extended_gift.name}")
-            webbrowser.open("Laugh.mp3")
             print("    ")
             print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
             engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
             engine.runAndWait()
+            webbrowser.open("Laugh.mp3")
             print(f"Dankjewel {event.user.uniqueId}!")
             print("    ")
             time.sleep(3)
@@ -352,11 +382,11 @@ async def on_gift(event: GiftEvent):
                     if len(data) > 0:
                         file_object.write("\n")
                     file_object.write(f"{event.gift.extended_gift.name}")
-                webbrowser.open("EmotionalDamage.mp3")
                 print(f"    ")
                 print(f"{event.user.uniqueId} heeft {event.gift.repeat_count}x \"{event.gift.extended_gift.name}\" gestuurd!")
                 engine.say(f"{event.user.uniqueId} has sent {event.gift.repeat_count}x\"{event.gift.extended_gift.name}\" !")
                 engine.runAndWait()
+                webbrowser.open("EmotionalDamage.mp3")
                 print(f"Dankjewel {event.user.uniqueId}!")
                 # print("(Emotional Damage sound)")
                 print(f"    ")
@@ -369,11 +399,11 @@ async def on_gift(event: GiftEvent):
                     if len(data) > 0:
                         file_object.write("\n")
                     file_object.write(f"{event.gift.extended_gift.name}")
-                webbrowser.open("EmotionalDamage.mp3")
                 print(f"    ")
                 print(f"{event.user.uniqueId} heeft \"{event.gift.extended_gift.name}\" gestuurd!")
                 engine.say(f"{event.user.uniqueId} has sent \"{event.gift.extended_gift.name}\" !")
                 engine.runAndWait()
+                webbrowser.open("EmotionalDamage.mp3")
                 print(f"Dankjewel {event.user.uniqueId}!")
                 # print("(Emotional Damage sound)")
                 print(f"    ")
@@ -438,7 +468,7 @@ async def on_connect(event: CommentEvent):
             last_play_command = f"{event.user.uniqueId} + {tempSearch[6:50]}"
             if title == last_song:
                 print(f"{event.user.uniqueId}, Dit nummer is al eens aangevraagd, probeer het later opnieuw.")
-            if timer == 0 and likes > 300:
+            if timer == 0 and likes > 1000:
                 timer = length
                 if length > 400:
                     print("Geen te lange nummers aub")
@@ -458,8 +488,8 @@ async def on_connect(event: CommentEvent):
                     calculate_time(timer)
                     last_song = title
                     await countdown()
-            if likes < 300:
-                print("Requests met minder dan 300 likes op youtube kunnen niet worden aangevraagd.\n")
+            if likes < 1000:
+                print("Requests met minder dan 1000 likes op youtube kunnen niet worden aangevraagd.\n")
             else:
                 print("Op dit moment wordt " + last_song + " al afgespeeld.")
                 calculate_time(timer)
@@ -468,8 +498,7 @@ async def on_connect(event: CommentEvent):
     elif (f"{event.comment}") == "/script":
         print("\n Het script is gratis op http://github.com/renatokuipers te vinden.\n")
     elif (f"{event.comment}") == "/help":
-        print(
-            "\nDe beschikbare commando's zijn:\n- /script\n- /ping\n- /play artist and title of song\n- /calc(3*3) of /calc(2+4) of andere sommen\n- /viewers\n- /say\n")
+        print("\nDe beschikbare commando's zijn:\n- /script\n- /ping\n- /play artist and title of song\n- /calc(3*3) of /calc(2+4) of andere sommen\n- /viewers\n")
         # print("- /script")
         # print("- /ping")
         # print("- /play artist and title of song")
@@ -494,14 +523,6 @@ async def on_connect(event: CommentEvent):
                 print(f"{event.user.uniqueId}" + "-> Dat commando bestaat niet :)\n")
                 # print("nope sound")
                 pass
-    elif "/say" in (f"{event.comment}"):
-        #remove /say from the event.comment section
-        evaluate = (f"{event.comment}")
-        evaluate = evaluate[5:250]
-        print(evaluate)
-        print(" ")
-        engine.say(evaluate)
-        engine.runAndWait()
     elif "/viewers" in (f"{event.comment}"):
         viewers = str(client.viewer_count)
         if viewers != None:
@@ -524,6 +545,7 @@ async def on_connect(event: CommentEvent):
 async def on_connect(event: LiveEndEvent):
     print(f"Livestream ended :(")
 
+
 if __name__ == '__main__':
     print(
         "Het script staat op github.com/renatokuipers\nDit is een project die ik maak puur uit hobby.\nChats komen in het scherm te staan.\nFollow, Share of Gift voor soundeffects.\nTyp /help voor commando's\n")
@@ -533,5 +555,8 @@ if __name__ == '__main__':
     # print("Typ /help voor commando's")
     try:
         client.run()
+        #show the gui from
+
+
     except:
         None, None
