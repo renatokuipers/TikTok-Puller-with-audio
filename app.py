@@ -515,7 +515,6 @@ async def on_connect(event: CommentEvent):
                      currentsong.update()
                      await calculate_time(timer)
                      await countdown()
-
             else:
                 print(f"{event.user.uniqueId} has requested {title}")
                 print(f"At the moment {last_song} is already playing.")
