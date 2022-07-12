@@ -38,17 +38,20 @@ root.config(background="#71a5d9")
 Chatbox_label = tk.Label(root, text="TikTok Chatbox", font=("Helvetica", 16), fg="white", bg="#71a5d9")
 Chatbox_label.pack(side=TOP)
 
-chatbox = Listbox(root, height=30, width=94)
+helptext = tk.Label(root, text="Type /help for the available commands", font=("Helvetica", 16), fg="white", bg="#71a5d9")
+helptext.pack(side=TOP)
+
+chatbox = Listbox(root, height=30, width=94, font=("helvetica", 12))
 chatbox.place(x=15, y=80)
 
-currentsong_label = Label(root, text="Current Song", font=("Helvetica", 12), bg="#71a5d9")
+currentsong_label = Label(root, text="Current Song", font=("Helvetica", 14), bg="#71a5d9")
 currentsong_label.place(x=15, y=570)
-currentsong = Listbox(root, height=2, width=50)
+currentsong = Listbox(root, height=2, width=70, font=("Helvetica", 14))
 currentsong.place(x=15, y=600)
 
-timer_label = Label(root, text="Time till next song", font=("Helvetica", 12), bg="#71a5d9")
+timer_label = Label(root, text="Time till next song", font=("Helvetica", 14), bg="#71a5d9")
 timer_label.place(x=15, y=640)
-timeleft = Listbox(root, height=1, width=50)
+timeleft = Listbox(root, height=1, width=70, font=("Helvetica", 14))
 timeleft.place(x=15, y=670)
 
 client: TikTokLiveClient = TikTokLiveClient(
@@ -108,17 +111,15 @@ async def calculate_time(length):
     minutes = length // 60
     #txtminutes = minutes.get()
     print(f"Wait {minutes} minutes and {seconds} seconds for the next request\n")
-    currentsong.delete(END)
-    currentsong.insert(0, END, title)
-    currentsong.update()
+    timeleft.delete(0, END)
+    timeleft.insert(END, f"{minutes} minutes and {seconds} seconds till the next request")
+    timeleft.update()
     while length > 0:
         length -= 1
         await asyncio.sleep(1)
-        timeleft.delete(0, END)
-        timeleft.insert(END, f"{minutes} minutes and {seconds} seconds till the next request")
-        timeleft.update()
         if length == 0:
             currentsongtxt = "No song is playing right now"
+            currentsong.delete(0, END)
             currentsong.insert(END, currentsongtxt)
             currentsong.insert(END, "type /play to request a song")
             currentsong.update()
@@ -130,10 +131,15 @@ async def calculate_time(length):
 
 async def countdown():
     global timer
+    seconds = timer % 60
+    minutes = timer // 60
     while timer > 0:
         timer -= 1
         await asyncio.sleep(1)
-        if length == 0:
+        timeleft.delete(0, END)
+        timeleft.insert(END, f"{minutes} minutes and {seconds} seconds till the next request")
+        timeleft.update()
+        if timer == 0:
             print("The next song request can be done :)")
             timeleft.insert(END, "The next song request can be done :)")
             timeleft.see(END)
@@ -483,7 +489,7 @@ async def on_connect(event: CommentEvent):
                 chatbox.see(END)
                 chatbox.update()
 
-            elif timer == 0 and likes > 1000:
+            elif timer == 0 and likes > 500:
                 timer = length
                 if length > 400:
                     print("Please don't requests songs that are too long.")
@@ -503,6 +509,9 @@ async def on_connect(event: CommentEvent):
                      last_song = title
                      print(f"\n Now playing: {title}")
                      chatbox.insert(END, f"\n Now playing: {title}")
+                     currentsong.delete(END)
+                     currentsong.insert(END, f"Now playing: {title}")
+                     currentsong.update()
                      await calculate_time(timer)
                      await countdown()
 
