@@ -511,6 +511,7 @@ async def on_connect(event: CommentEvent):
                      chatbox.insert(END, f"\n Now playing: {title}")
                      currentsong.delete(END)
                      currentsong.insert(END, f"Now playing: {title}")
+                     currentsong.insert(END, "")
                      currentsong.update()
                      await calculate_time(timer)
                      await countdown()
