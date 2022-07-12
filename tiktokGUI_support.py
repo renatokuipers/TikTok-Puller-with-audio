@@ -5,7 +5,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.constants import *
 import tiktokGUI
-
+import app
+from app import *
 
 def main(*args):
     '''Main entry point for the application.'''
