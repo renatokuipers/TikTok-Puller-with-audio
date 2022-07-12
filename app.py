@@ -11,9 +11,6 @@ import vlc
 from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
 from youtubesearchpython import *
-#import the tiktokGUI file
-from tiktokGUI import *
-import tiktokGUI
 
 usersTxt = open("users.txt")
 gifts = (open("gifts.txt"))
@@ -35,24 +32,24 @@ root.geometry("600x750")
 root.config(background="#71a5d9")
 
 #add a label above the chatbox with the name: TikTok Chatbox
-Chatbox_label = tk.Label(root, text="TikTok Chatbox", font=("Helvetica", 16), fg="white", bg="#71a5d9")
+Chatbox_label = tk.Label(root, text="TikTok Chatbox", font=("Helvetica", 14), fg="white", bg="#71a5d9")
 Chatbox_label.pack(side=TOP)
 
-helptext = tk.Label(root, text="Type /help for the available commands", font=("Helvetica", 16), fg="white", bg="#71a5d9")
+helptext = tk.Label(root, text="Type /help for the available commands", font=("Helvetica", 14), fg="white", bg="#71a5d9")
 helptext.pack(side=TOP)
 
-chatbox = Listbox(root, height=30, width=94, font=("helvetica", 12))
+chatbox = Listbox(root, height=25, width=63, font=("helvetica", 12), fg="black", bg="white")
 chatbox.place(x=15, y=80)
 
-currentsong_label = Label(root, text="Current Song", font=("Helvetica", 14), bg="#71a5d9")
+currentsong_label = Label(root, text="Current Song", font=("Helvetica", 12), bg="#71a5d9")
 currentsong_label.place(x=15, y=570)
-currentsong = Listbox(root, height=2, width=70, font=("Helvetica", 14))
+currentsong = Listbox(root, height=2, width=63, font=("Helvetica", 12), fg="black", bg="white")
 currentsong.place(x=15, y=600)
 
-timer_label = Label(root, text="Time till next song", font=("Helvetica", 14), bg="#71a5d9")
-timer_label.place(x=15, y=640)
-timeleft = Listbox(root, height=1, width=70, font=("Helvetica", 14))
-timeleft.place(x=15, y=670)
+timer_label = Label(root, text="Time untill next request", font=("Helvetica", 12), bg="#71a5d9")
+timer_label.place(x=15, y=645)
+timeleft = Listbox(root, height=1, width=63, font=("Helvetica", 12), fg="black", bg="white")
+timeleft.place(x=15, y=675)
 
 client: TikTokLiveClient = TikTokLiveClient(
     unique_id="@"+uniqueId, **(
@@ -102,49 +99,29 @@ async def on_join(event: JoinEvent):
     # webbrowser.open("like.mp3")
     print(f"    ")
 """
-
-#calculate the time in seconds and minutes for the countdown() function
-async def calculate_time(length):
-    global title
-    seconds = length % 60
-    #txtseconds = seconds.get()
-    minutes = length // 60
-    #txtminutes = minutes.get()
-    print(f"Wait {minutes} minutes and {seconds} seconds for the next request\n")
-    timeleft.delete(0, END)
-    timeleft.insert(END, f"{minutes} minutes and {seconds} seconds till the next request")
-    timeleft.update()
-    while length > 0:
-        length -= 1
-        await asyncio.sleep(1)
-        if length == 0:
-            currentsongtxt = "No song is playing right now"
-            currentsong.delete(0, END)
-            currentsong.insert(END, currentsongtxt)
-            currentsong.insert(END, "type /play to request a song")
-            currentsong.update()
-            print("The next song request can be done :)")
-            timeleft.delete(0, END)
-            timeleft.insert(END, "The next song request can be done :)")
-            timeleft.update()
-            print("Type /play artist and title to request a song\n")
-
-async def countdown():
+async def countdown(t):
     global timer
-    seconds = timer % 60
-    minutes = timer // 60
-    while timer > 0:
-        timer -= 1
-        await asyncio.sleep(1)
+    while t:
+        mins, secs = divmod(t, 60)
+        songtimer = '{:02d}:{:02d}'.format(mins, secs)
+        print(songtimer, end="\r")
         timeleft.delete(0, END)
-        timeleft.insert(END, f"{minutes} minutes and {seconds} seconds till the next request")
+        timeleft.insert(END, f"{songtimer} till the next request")
         timeleft.update()
-        if timer == 0:
-            print("The next song request can be done :)")
-            timeleft.insert(END, "The next song request can be done :)")
-            timeleft.see(END)
-            timeleft.update()
-            print("Type /play artist and title to request a song\n")
+        await asyncio.sleep(1)
+        t -= 1
+
+    currentsongtxt = "No song is playing right now"
+    currentsong.delete(0, END)
+    currentsong.insert(END, currentsongtxt)
+    currentsong.insert(END, "type /play to request a song")
+    currentsong.update()
+    print("The next song request can be done :)")
+    timeleft.delete(0, END)
+    timeleft.insert(END, "The next song request can be done :)")
+    timeleft.update()
+    print("Type /play artist and title to request a song\n")
+    timer = 0
 
 
 @client.on("like")
@@ -476,7 +453,7 @@ async def on_connect(event: CommentEvent):
             likes = video.likes
             media = vlc.MediaPlayer(best.url)
             last_play_command = f"{event.user.uniqueId} + {tempSearch[6:50]}"
-            if likes < 500:
+            if likes < 400:
                 print("Unpopular songs can't be requested.\n")
                 chatbox.insert(END, "Unpopular songs can't be requested.")
                 chatbox.insert(END, "")
@@ -489,7 +466,7 @@ async def on_connect(event: CommentEvent):
                 chatbox.see(END)
                 chatbox.update()
 
-            elif timer == 0 and likes > 500:
+            elif timer == 0 and likes > 400:
                 timer = length
                 if length > 400:
                     print("Please don't requests songs that are too long.")
@@ -509,12 +486,13 @@ async def on_connect(event: CommentEvent):
                      last_song = title
                      print(f"\n Now playing: {title}")
                      chatbox.insert(END, f"\n Now playing: {title}")
-                     currentsong.delete(END)
+                     chatbox.insert(END, "")
+                     chatbox.see(END)
+                     chatbox.update()
+                     currentsong.delete(0, END)
                      currentsong.insert(END, f"Now playing: {title}")
-                     currentsong.insert(END, "")
                      currentsong.update()
-                     await calculate_time(timer)
-                     await countdown()
+                     await countdown(timer)
             else:
                 print(f"{event.user.uniqueId} has requested {title}")
                 print(f"At the moment {last_song} is already playing.")
@@ -523,7 +501,7 @@ async def on_connect(event: CommentEvent):
                 chatbox.insert(END, "")
                 chatbox.see(END)
                 chatbox.update()
-                await calculate_time(timer)
+                await countdown()
 
     elif (f"{event.comment}") == "/script":
         print("\nThe script is free on GitHub: http://github.com/renatokuipers.\n")
