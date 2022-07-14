@@ -3,6 +3,7 @@ import time
 import tkinter as tk
 import webbrowser
 from tkinter import *
+import random
 
 import pafy
 import pyttsx3
@@ -17,7 +18,6 @@ users = []
 timer = 0
 length = 0
 loop = asyncio.get_event_loop()
-#uniqueId = "tinytimsadventure" #others unique id
 uniqueId = "renjestoo" #your unique id
 
 songlist = open("songlist.txt")
@@ -26,7 +26,7 @@ last_play_command = ""
 engine = pyttsx3.init()
 song_list = []
 blacklist = ["meme", "troll", "rick astley", "killer kamal", "never gonna give you up", "astley", "fuck", "moan", "moaning", "scream", "intro", "sex", "curse", "curseword", "cursewords", "anoying", " 1 hour", "4 hour", "2 hour", "10 hour", "24 hour", "8 hour"]
-colors = ["red", "green", "blue", "yellow", "orange", "purple", "pink", "black", ""]
+colors = ["red", "green", "blue", "yellow", "orange", "purple", "pink", "black", "brown", "cyan", "grey", "magenta", "violet", "indigo", "gold", "turquoise", "silver", "salmon", "indianred"]
 
 root = Tk()
 root.title("TikTok Interactive App")
@@ -102,6 +102,7 @@ async def on_join(event: JoinEvent):
     print(f"    ")
 """
 
+"""
 def checksonglist(title):
     if song_list != 0: # if the song list is not empty
         if title in song_list: # if the title is in the song list
@@ -119,7 +120,9 @@ def checksonglist(title):
 
     else: # if song_list is empty
         song_list.insert(END, title)
+"""
 
+"""
 def playsonglist(title):
     checksonglist(title)
     if song_list != 0:  # if the song list is not empty
@@ -132,6 +135,7 @@ def playsonglist(title):
             title = video.title
             likes = video.likes
             media = vlc.MediaPlayer(best.url)
+"""
 
 async def countdown(t):
     global timer
@@ -177,6 +181,8 @@ async def on_share(event: ShareEvent):
     print(f"    ")
     print(f"{event.user.uniqueId} shared the livestream!")
     print(f"Thanks {event.user.uniqueId}!!!")
+    chatbox.insert(END, f"{event.user.uniqueId} shared the livestream!")
+    chatbox.insert(END, f"Thanks {event.user.uniqueId}!!")
     #engine.say(f"{event.user.uniqueId} shared the lifestream!")
     #engine.runAndWait()
     #engine.say(f"Thanks {event.user.uniqueId}!!!")
@@ -447,7 +453,6 @@ async def on_like(event: FollowEvent):
         print(f"{event.user.uniqueId} followed " + uniqueId + " !")
         print(f"Thanks voor de follow {event.user.uniqueId}, you are amazing!")
         print(f"    ")
-        # time.sleep(6)
         time.sleep(3)
 
 @client.on("comment")
@@ -456,11 +461,13 @@ async def on_connect(event: CommentEvent):
     global timer
     global last_song
     global last_play_command
+    color = random.choice(colors)
     if f"{event.comment}" == "/ping" or f"{event.comment}" == "/Ping" or f"{event.comment}" == "/PING":
         print("    ")
         print(f"{event.user.uniqueId}" + " says ping")
         print("I say: pong!")
         print("    ")
+        chatbox.insert(END, f"{event.user.uniqueId}: ")
         chatbox.insert(END, f"{event.user.uniqueId}" + " says ping")
         chatbox.insert(END, "I say: pong!")
         chatbox.insert(END, "    ")
@@ -471,13 +478,25 @@ async def on_connect(event: CommentEvent):
         videosSearch = VideosSearch(tempSearch[6:150], limit=1)
         if f"{event.comment}" == "/play" or f"{event.comment}" == "/Play":
             print("There has to be a Artist and and a title to request a song.")
-            #await client.send_message("There has to be a Artist and and a title to request a song.", sessionID)
+            chatbox.insert(END, f"{event.user.uniqueId}: ")
+            chatbox.insert(END, f"{event.user.uniqueId}" + " says /play")
+            chatbox.insert(END, "There has to be a Artist and and a title to request a song.")
+            chatbox.insert(END, "    ")
+            chatbox.see(END)
+            chatbox.update()
+
         if "sus" in (f"{event.comment}") or "killer kamal" in (f"{event.comment}") or "troll" in (
                 f"{event.comment}") or "rick roll" in (f"{event.comment}") or "never gonna give you up" in (
-                f"{event.comment}") or "6IX9INE" in (f"{event.comment}") or "astley" in (f"{event.comment}"):
+                f"{event.comment}") or "6IX9INE" in (f"{event.comment}") or "astley" in (f"{event.comment}") or "meme" in (f"{event.comment}") or "shake" in (f"{event.comment}") or "Rick Roll" in f"{event.comment}":
             print(f"{event.user.uniqueId} wants to request a song")
             print("Sorry, we won't listen to this ;)")
             print("")
+            chatbox.insert(END, f"{event.user.uniqueId}: ")
+            chatbox.insert(END, f"{event.user.uniqueId} wants to request a song")
+            chatbox.insert(END, "Sorry, we won't listen to this ;)")
+            chatbox.insert(END, "")
+            chatbox.see(END)
+            chatbox.update()
 
         for i in range(1):
             link = (videosSearch.result()['result'][i]['link'])
@@ -488,34 +507,60 @@ async def on_connect(event: CommentEvent):
             likes = video.likes
             media = vlc.MediaPlayer(best.url)
             last_play_command = f"{event.user.uniqueId} + {tempSearch[6:50]}"
-            if likes < 400:
+
+            if timer != 0:
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
+                chatbox.insert(END, "Please wait until the current song is finished.")
+                return
+
+            elif "Rick Astley" in title or "meme" in title or "6IX9INE" in title or "earrape" in title or "killer kamal" in title or "troll" in title or "shake" in title or "Rick Roll" in title:
+                print(f"{event.user.uniqueId} wants to request a song")
+                print("Sorry, we won't listen to this ;)")
+                print("")
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
+                chatbox.insert(END, f"{event.user.uniqueId} wants to request a song")
+                chatbox.insert(END, "Sorry, we won't listen to this ;)")
+                chatbox.insert(END, "")
+                chatbox.see(END)
+                chatbox.update()
+                return
+
+            elif likes < 400:
                 print("Unpopular songs can't be requested.\n")
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
                 chatbox.insert(END, "Unpopular songs can't be requested.")
                 chatbox.insert(END, "")
                 chatbox.see(END)
                 chatbox.update()
+                return
 
             elif title == last_song:
-                print(f"Hey {event.user.uniqueId}, this song was already requested before, please try again later.")
-                chatbox.insert(END, f"Hey {event.user.uniqueId}, this song was already requested before, please try again later.")
+                print(f"Hey {event.user.uniqueId}")
+                print("this song was already requested before, please try again later.")
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
+                chatbox.insert(END, f"Hey {event.user.uniqueId}")
+                chatbox.insert(END, "this song was already requested before, please try again later.")
                 chatbox.insert(END, "")
                 chatbox.see(END)
                 chatbox.update()
+                return
 
             elif timer == 0 and likes > 400:
                 timer = length
                 if length > 400:
                     print("Please don't requests songs that are too long.")
                     print("Other people also want a chance to request ;)")
+                    chatbox.insert(END, f"{event.user.uniqueId}: ")
                     chatbox.insert(END, "Please don't requests songs that are too long.")
                     chatbox.insert(END, "Other people also want a chance to request ;)")
                     chatbox.insert(END, "")
                     chatbox.see(END)
                     chatbox.update()
-                    timer = 0
+                    return
 
                 else:
                     print(f"{event.user.uniqueId} has requested {title}")
+                    chatbox.insert(END, f"{event.user.uniqueId}: ")
                     chatbox.insert(END, f"{event.user.uniqueId} has requested {title}")
                     #playsonglist(title)
                     media.play()
@@ -534,31 +579,49 @@ async def on_connect(event: CommentEvent):
             else:
                 print(f"{event.user.uniqueId} has requested {title}")
                 print(f"At the moment {last_song} is already playing.")
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
                 chatbox.insert(END, f"{event.user.uniqueId} has requested {title}")
                 chatbox.insert(END, f"At the moment {last_song} is already playing.")
                 chatbox.insert(END, "")
                 chatbox.see(END)
                 chatbox.update()
                 #checksonglist(title)
-                await countdown(timer)
+                #await countdown(timer)
 
     elif f"{event.comment}" == "/script" or f"{event.comment}" == "/Script":
         print("\nThe script is free on GitHub: http://github.com/renatokuipers.\n")
-        chatbox.insert(END, "The script is free on GitHub: http://github.com/renatokuipers.")
+        chatbox.insert(END, f"{event.user.uniqueId}: ")
+        chatbox.insert(END, f"Hey {event.user.uniqueId}, The script is free on GitHub: http://github.com/renatokuipers.")
         chatbox.insert(END, "")
         chatbox.see(END)
         chatbox.update()
+
     elif f"{event.comment}" == "/help" or f"{event.comment}" == "/Help":
         print("\nThe available commands are:\n- /script\n- /ping\n- /play artist and title of song\n- /calc(3*3) or /calc(2+4) or other sums\n- /viewers\n")
+        chatbox.insert(END, f"{event.user.uniqueId}: ")
         chatbox.insert(END, "The available commands are:")
         chatbox.insert(END, "- /script")
         chatbox.insert(END, "- /ping")
         chatbox.insert(END, "- /play artist and title of song")
         chatbox.insert(END, "- /calc(3*3) or /calc(2+4) or other sums")
         chatbox.insert(END, "- /viewers")
+        chatbox.insert(END, "- /dotch")
         chatbox.insert(END, "")
         chatbox.see(END)
         chatbox.update()
+
+    elif "/Dotch" in f"{event.comment}" or "/dotch" in f"{event.comment}" or "/DOTCH" in f"{event.comment}":
+        print(f"Hey {event.user.uniqueId}, The link for the donation for our dog Dotch is: https://gofund.me/9d59d8be")
+        print("Please consider donating to our dog Dotch, he is having epilepsy attacks every 1 or 2 times a day.")
+        chatbox.insert(END, f"{event.user.uniqueId}: ")
+        chatbox.insert(END, f"Hey {event.user.uniqueId}")
+        chatbox.insert(END, "The link for the donation for our dog Dotch is: https://gofund.me/9d59d8be")
+        chatbox.insert(END, "Please consider donating to our dog Dotch")
+        chatbox.insert(END, "He is having epilepsy attacks every 1 or 2 times a day.")
+        chatbox.insert(END, "")
+        chatbox.see(END)
+        chatbox.update()
+
     elif "/calc" in f"{event.comment}" or "/Calc" in f"{event.comment}":
         if "exec" in f"{event.comment}" or "exit" in f"{event.comment}" or "quit" in f"{event.comment}" or "import" in f"{event.comment}" or "compile" in f"{event.comment}":
             webbrowser.open("nope.mp3")
@@ -570,6 +633,7 @@ async def on_connect(event: CommentEvent):
                 print(f"{event.user.uniqueId} asks \"{event.comment}\:")
                 print(eval(evaluate))
                 print(f" ")
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
                 chatbox.insert(END, f"{event.user.uniqueId} asks \"{event.comment}\:")
                 chatbox.insert(END, eval(evaluate))
                 chatbox.insert(END, " ")
@@ -580,6 +644,7 @@ async def on_connect(event: CommentEvent):
                 webbrowser.open("nope.mp3")
                 print(f"{event.user.uniqueId}" + "-> that command doesn't exist :)\n")
                 print("Type /help to see the available commands.")
+                chatbox.insert(END, f"{event.user.uniqueId}: ")
                 chatbox.insert(END, f"{event.user.uniqueId} asks \"{event.comment}\:")
                 chatbox.insert(END, "that command doesn't exist :)")
                 chatbox.insert(END, "Type /help to see the available commands.")
@@ -592,6 +657,7 @@ async def on_connect(event: CommentEvent):
         if viewers != None:
             print(f"    ")
             print(f"{event.user.uniqueId} asks the amount of viewers in this livestream")
+            chatbox.insert(END, f"{event.user.uniqueId}: ")
             chatbox.insert(END, f"{event.user.uniqueId} asks the amount of viewers in this livestream")
             chatbox.insert(END, "")
             chatbox.see(END)
